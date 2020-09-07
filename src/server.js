@@ -5,12 +5,6 @@ const app = express();
 //Converter body das requisições para json
 app.use(express.json());
 
-
-function calcularHorario(request,response){
-  
-    const {arrivalTime , departureTime } = request.body
-}
-
 app.post("/calcularHorario", (request, response) => {
   //Fazer tratamento quando horas forem iguais
   const { arrivalTime, departureTime, date } = request.body;
@@ -20,7 +14,6 @@ app.post("/calcularHorario", (request, response) => {
 
   let departureHour = parseInt(departureTime.substring(0, 2));
   let departureMinute = parseInt(departureTime.substring(3, 5));
-
   let workHours,
     workMinutes,
     dayTimeHours,
@@ -28,21 +21,36 @@ app.post("/calcularHorario", (request, response) => {
     dayTimeMinutes,
     nightTimeMinutes;
 
-  //Verifico se hora de chegada é maior que hora de saida, se sim tenho que alte
-  //rar o calculo
-  /*
   if (arrivalHour > departureHour) {
-    workHours = Math.abs(arrivalHour - departureHour - 24);
-  } else {
-    workHours = Math.abs(arrivalHour - departureHour);
-  }
-  */
+    //Valida de 5:01 a 4:59
+    if (departureHour <= 5 && arrivalHour < 22) {
+      //Como tenho a certeza que a hora de chegada esta entre 5 e 22 basta so di
+      //minuir a hora de chegada por 22
 
-  /**
-   * Horario das 18:20 as 6:59
-   * horarioDiruno = mod(horarioComeço - horarioDiurnoMax)240 + mod(horarioNoturnoMax - horarioSaida)
-   * primeiro horario : 18:20 as 22
-   * segunda horario : 5 as 6 :59 */ 
+      dayTimeHours = Math.abs(arrivalHour - 22);
+      nightTimeHours = Math.abs(24 + departureHour - 22);
+
+      //Nesse caso o tempo em minutos sempre sera acrescentado
+      nightTimeMinutes = departureMinute;
+      dayTimeMinutes = arrivalMinute;
+
+      //Se o horario de chegada for quebrado diminuo um das horas e acrescento
+      //os minutos
+      if (arrivalMinute > 0) {
+        dayTimeHours--;
+        dayTimeMinutes = arrivalMinute - 60;
+      }
+      if (departureMinute > 0) {
+        nightTimeMinutes = departureMinute;
+      }
+    } else if(departureHour > 5) {
+      
+    }
+  }else{
+
+  }
+  //Calculo de horas diurnas
+  /*
   if (arrivalHour >= departureHour) {
     if (departureHour <= 5) {
       nightTimeHours = Math.abs(22 - departureHour - 24);
@@ -55,16 +63,23 @@ app.post("/calcularHorario", (request, response) => {
     dayTimeHours = Math.abs(arrivalHour - 22);
     nightTimeHours = departureHour - 22;
   }
-  
   workMinutes = Math.abs(arrivalMinute - departureMinute);
-
+*/
   return response.status(201).json({
     workHours: `${workHours}:${workMinutes}`,
-    dayTimeHours: `${dayTimeHours}:${Math.abs(arrivalMinute)}`,
-    nightTimeHours: nightTimeHours,
+    dayTimeHours: `${dayTimeHours}:${Math.abs(dayTimeMinutes)}`,
+    nightTimeHours: `${nightTimeHours}:${nightTimeMinutes}`,
   });
 });
 
 app.listen(3333, () => console.log("server started on port 3033!"));
 
-360 / 60;
+//Verifico se hora de chegada é maior que hora de saida, se sim tenho que alte
+//rar o calculo
+/*
+  if (arrivalHour > departureHour) {
+    workHours = Math.abs(arrivalHour - departureHour - 24);
+  } else {
+    workHours = Math.abs(arrivalHour - departureHour);
+  }
+  */
