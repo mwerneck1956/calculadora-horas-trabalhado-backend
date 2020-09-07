@@ -21,6 +21,7 @@ app.post("/calcularHorario", (request, response) => {
     nightTimeHours,
     dayTimeMinutes,
     nightTimeMinutes;
+  //caso horario de saida === horario entrada
 
   if (departureHour > arrivalHour) {
     if (arrivalHour < 5 && departureHour >= 22) {
@@ -30,8 +31,8 @@ app.post("/calcularHorario", (request, response) => {
       //Se a soma dos minutos de chegada com minutos de saida forem > 60 dev
       //e acrescentar um as horas noturnas e o resto da divisão dessa somo p
       //or 60 serão os minutos noturno
-
-      if (arrivalMinute + departureMinute > 60) {
+      dayTimeHours;
+      if (arrivalMinute + departureMinute >= 60) {
         nightTimeHours++;
         nightTimeMinutes = (arrivalMinute + departureMinute) % 60;
       }
@@ -39,12 +40,11 @@ app.post("/calcularHorario", (request, response) => {
       //Nesse caso hora diurno sempre vai ser o maximo trabalhado
       dayTimeHours = 18;
       dayTimeMinutes = 00;
-
-    } else if (arrivalHour > 5 && departureHour>=22) {
-      dayTimeHours = Math.abs(arrivalHour - departureHour) - Math.abs(departureHour - 22);
+    } else if (arrivalHour > 5 && departureHour >= 22) {
+      dayTimeHours =
+        Math.abs(arrivalHour - departureHour) - Math.abs(departureHour - 22);
       //Se minuto for maior que 0 a hora ira diminuir um
       if (arrivalMinute > 0) {
-        console.log('me chegou aqui')
         dayTimeHours--;
         dayTimeMinutes = Math.abs(arrivalMinute - 60);
       }
@@ -79,6 +79,46 @@ app.post("/calcularHorario", (request, response) => {
           Math.abs(departureHour - arrivalHour) - Math.abs(5 - arrivalHour);
       }
     }
+  } else if (arrivalHour > departureHour) {
+    if (arrivalHour < 22) {
+      if (departureHour >= 5) {
+        //Se ele saiu depois da 5 e entrou antes das 22 logo ele trabalhou todo
+        // o turno da noite
+        nightTimeHours = 07;
+        nightTimeMinutes = 00;
+        dayTimeHours = Math.abs(22 - arrivalHour) + Math.abs(5 - departureHour);
+        if(arrivalMinute + departureMinute >= 60){
+          dayTimeMinutes = (arrivalMinute+departureMinute)%60;
+        }else if(arrivalMinute > 0){
+            dayTimeHours--;
+            dayTimeMinutes = arrivalMinute + departureMinute;
+        }
+      } else{
+        dayTimeHours = Math.abs(22 - arrivalHour);
+        dayTimeMinutes = arrivalMinute;
+        if (arrivalMinute && departureMinute) {
+          dayTimeHours--;
+        }
+        nightTimeHours = Math.abs(2 + departureHour);
+        nightTimeMinutes = departureMinute;
+      }
+    }else{
+      if(departureHour <= 5 ){
+        /*Como esse periodo é compreendido entre 22 e 5 horas , o horario diurn
+        é nulo */
+        dayTimeHours =00;
+        dayTimeMinutes =00;
+        nightTimeHours = arrivalHour ===  22  ?  Math.abs(arrivalHour -24) + departureHour : Math.abs(arrivalHour - 22) + departureHour;
+        nightTimeMinutes = departureMinute + arrivalMinute;
+
+        if(arrivalMinute + departureMinute >=60){
+           nightTimeHours++;
+           nightTimeMinutes = (departureMinute + arrivalMinute) %60;
+        }
+      }
+
+    }
+  } /*Caso de horaSaida===horaEntrda */ else {
   }
 
   return response.status(201).json({
