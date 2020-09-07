@@ -21,54 +21,73 @@ app.post("/calcularHorario", (request, response) => {
     dayTimeMinutes,
     nightTimeMinutes;
 
-  if (arrivalHour > departureHour) {
-    //Valida de 5:01 a 4:59
-    if (departureHour <= 5 && arrivalHour < 22) {
-      //Como tenho a certeza que a hora de chegada esta entre 5 e 22 basta so di
-      //minuir a hora de chegada por 22
+  if (departureHour > arrivalHour) {
+    if (arrivalHour < 5 && departureHour > 22) {
+      nightTimeHours = Math.abs(5 - arrivalHour) + Math.abs(departureHour - 22);
 
-      dayTimeHours = Math.abs(arrivalHour - 22);
-      nightTimeHours = Math.abs(24 + departureHour - 22);
-
-      //Nesse caso o tempo em minutos sempre sera acrescentado
       nightTimeMinutes = departureMinute;
-      dayTimeMinutes = arrivalMinute;
 
-      //Se o horario de chegada for quebrado diminuo um das horas e acrescento
-      //os minutos
-      if (arrivalMinute > 0) {
+      //Se a soma dos minutos de chegada com minutos de saida forem > 60 dev
+      //e acrescentar um as horas noturnas e o resto da divisão dessa somo p
+      //or 60 serão os minutos noturno
+
+      if (arrivalMinute + departureMinute > 60) {
+        nightTimeHours++;
+        nightTimeMinutes = (arrivalMinute + departureMinute) % 60;
+      }
+
+      //Nesse caso hora diurno sempre vai ser o maximo trabalhado
+      dayTimeHours = 18;
+      dayTimeMinutes = 00;
+    }if (arrivalHour > 5) {
+      console.log("entrou heheh ");
+      dayTimeHours =Math.abs(arrivalHour - departureHour) - Math.abs(departureHour - 22);
+      //Se minuto for maior que 0 a hora ira diminuir um
+      if (arrivalMinute > 0 ){
         dayTimeHours--;
-        dayTimeMinutes = arrivalMinute - 60;
+        dayTimeMinutes = Math.abs(arrivalMinute - 60);
       }
-      if (departureMinute > 0) {
-        nightTimeMinutes = departureMinute;
-      }
-    } else if(departureHour > 5) {
-      
-    }
-  }else{
 
-  }
-  //Calculo de horas diurnas
-  /*
-  if (arrivalHour >= departureHour) {
-    if (departureHour <= 5) {
-      nightTimeHours = Math.abs(22 - departureHour - 24);
-      dayTimeHours = Math.abs(arrivalHour - 22);
+      //Como horario de saida sempre sera > 22 e entrada < 5
+      nightTimeHours = Math.abs(departureHour - 22);
+      nightTimeMinutes = departureMinute;
     } else {
-      nightTimeHours = 7;
-      dayTimeHours = Math.abs(22 - arrivalHour + departureHour - 5);
+      //Como a hora é < 22 so vai ter horario noturno se a hora de chegada for
+      //inferior a 5
+      if (arrivalHour > 5) {
+        nightTimeHours = 00;
+        nightTimeMinutes = 00;
+        dayTimeHours =
+          Math.abs(departureHour - arrivalHour) - Math.abs(departureHour - 22);
+        //Minutos de dia de trabalho vão sempre ser a diferença dos minutos de
+        //saida ate os minutos de chegada
+        dayTimeMinutes = Math.abs(arrivalMinute - departureMinute);
+      } else {
+        console.log("entra aqui");
+        nightTimeHours = Math.abs(arrivalHour - 5);
+        /*Já se os minutos de trabalho noturno forem maior que 0 tenho que tirar
+        1 das horas noturnos e para achar os minutos tenho que fazer 60 - hora
+        chegada
+        */
+        if (arrivalMinute > 0) {
+          nightTimeHours--;
+          nightTimeMinutes = Math.abs(arrivalMinute - 60);
+        }
+        //Os minutos diurno sempre serão igual ao minuto de saida
+        dayTimeMinutes = departureMinute;
+        //
+        dayTimeHours =
+          Math.abs(departureHour - arrivalHour) - Math.abs(5 - arrivalHour);
+      }
     }
-  } else if (departureHour > arrivalHour) {
-    dayTimeHours = Math.abs(arrivalHour - 22);
-    nightTimeHours = departureHour - 22;
   }
-  workMinutes = Math.abs(arrivalMinute - departureMinute);
-*/
+
   return response.status(201).json({
     workHours: `${workHours}:${workMinutes}`,
-    dayTimeHours: `${dayTimeHours}:${Math.abs(dayTimeMinutes)}`,
-    nightTimeHours: `${nightTimeHours}:${nightTimeMinutes}`,
+    dayTimeHours: `${dayTimeHours}:${Math.abs(dayTimeMinutes ? dayTimeMinutes : "00")}`,
+    nightTimeHours: `${nightTimeHours}:${
+      nightTimeMinutes ? nightTimeMinutes : "00"
+    }`,
   });
 });
 
