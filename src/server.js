@@ -1,15 +1,11 @@
 const express = require("express");
 
 const app = express();
-const cors = require('cors');
+const cors = require("cors");
 
 //Converter body das requisições para json
 app.use(express.json());
-app.use(cors({origin: true, credentials: false}));
-
-
-
-
+app.use(cors({ origin: true, credentials: false }));
 
 app.post("/calcularHorario", (request, response) => {
   //Fazer tratamento quando horas forem iguais ou excederem 24horas
@@ -148,19 +144,20 @@ app.post("/calcularHorario", (request, response) => {
     }
   }
 
-  dayTimeHours = Math.abs(dayTimeHours);
-  dayTimeMinutes = Math.abs(dayTimeMinutes);
-  nightTimeHours = Math.abs(nightTimeHours);
-  nightTimeMinutes = Math.abs(nightTimeMinutes);
+  //Para ajudar na formatação da respota
+  dayTimeHours = dayTimeHours ? Math.abs(dayTimeHours) : 00;
+  dayTimeMinutes = dayTimeMinutes ? Math.abs(dayTimeMinutes) : 00;
+  nightTimeHours = nightTimeHours ? Math.abs(nightTimeHours) : 00;
+  nightTimeMinutes =nightTimeMinutes? Math.abs(nightTimeMinutes) :00;
 
   return response.status(201).json({
     workHours: `${workHours}:${workMinutes}`,
-    dayTimeHours: `${dayTimeHours > 10 ? dayTimeHours : `0${dayTimeHours}`}:${
-      dayTimeMinutes > 10 ? dayTimeMinutes : `0${dayTimeMinutes}`
+    dayTimeHours: `${dayTimeHours >= 10 ? dayTimeHours : `0${dayTimeHours}`}:${
+      dayTimeMinutes >= 10 ? dayTimeMinutes : `0${dayTimeMinutes}`
     }`,
     nightTimeHours: `${
-      nightTimeHours > 10 ? nightTimeHours : `0${nightTimeHours}`
-    }:${dayTimeHours > 10 ? dayTimeHours : `0${dayTimeHours}`}`,
+      nightTimeHours >= 10 ? nightTimeHours : `0${nightTimeHours}`
+    }:${nightTimeMinutes >= 10 ? nightTimeMinutes : `0${nightTimeMinutes}`}`,
   });
 });
 
