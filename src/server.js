@@ -87,8 +87,11 @@ app.post("/calcularHorario", (request, response) => {
         nightTimeHours = 07;
         nightTimeMinutes = 00;
         dayTimeHours = Math.abs(22 - arrivalHour) + Math.abs(5 - departureHour);
+
+        
         if(arrivalMinute + departureMinute >= 60){
-          dayTimeMinutes = (arrivalMinute+departureMinute)%60;
+          dayTimeMinutes = arrivalMinute - departureMinute;
+          //dayTimeMinutes = (arrivalMinute+departureMinute)%60;
         }else if(arrivalMinute > 0){
             dayTimeHours--;
             dayTimeMinutes = arrivalMinute + departureMinute;
@@ -115,6 +118,15 @@ app.post("/calcularHorario", (request, response) => {
            nightTimeHours++;
            nightTimeMinutes = (departureMinute + arrivalMinute) %60;
         }
+      }else{
+        /*Se o funcionario chegou apos as 22 e saiu depois das 5 da manhã ela tr
+        alhou uma parte no perido da noite e outra no diurno , logo*/
+        nightTimeHours =  Math.abs(arrivalHour - 24) + 5;
+        nightTimeMinutes = arrivalMinute;
+
+
+        dayTimeHours =Math.abs(5 - departureHour);
+        dayTimeMinutes = departureMinute;
       }
 
     }
