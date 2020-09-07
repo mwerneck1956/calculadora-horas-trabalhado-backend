@@ -119,15 +119,22 @@ app.post("/calcularHorario", (request, response) => {
         nightTimeMinutes = departureMinute + arrivalMinute;
 
         if (arrivalMinute + departureMinute >= 60) {
+          console.log('travou aqui')
           nightTimeHours++;
+          //nightTimeMinutes = departureMinute - arrivalMinute
           nightTimeMinutes = (departureMinute + arrivalMinute) % 60;
         }
       } else {
-        /*Se o funcionario chegou apos as 22 e saiu depois das 5 da manhã ela tr
+        /*Se o funcionario chegou apos as 22 e saiu depois d
+        as 5 da manhã ela tr
         alhou uma parte no perido da noite e outra no diurno , logo*/
+        
         nightTimeHours = Math.abs(arrivalHour - 24) + 5;
         nightTimeMinutes = arrivalMinute;
-
+        if(arrivalMinute > 0){
+            nightTimeHours--
+            nightTimeMinutes-=60  
+        }
         dayTimeHours = Math.abs(5 - departureHour);
         dayTimeMinutes = departureMinute;
       }
