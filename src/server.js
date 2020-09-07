@@ -1,9 +1,15 @@
 const express = require("express");
 
 const app = express();
+const cors = require('cors');
 
 //Converter body das requisições para json
 app.use(express.json());
+app.use(cors({origin: true, credentials: false}));
+
+
+
+
 
 app.post("/calcularHorario", (request, response) => {
   //Fazer tratamento quando horas forem iguais ou excederem 24horas
