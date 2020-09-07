@@ -119,7 +119,6 @@ app.post("/calcularHorario", (request, response) => {
         nightTimeMinutes = departureMinute + arrivalMinute;
 
         if (arrivalMinute + departureMinute >= 60) {
-          console.log('travou aqui')
           nightTimeHours++;
           //nightTimeMinutes = departureMinute - arrivalMinute
           nightTimeMinutes = (departureMinute + arrivalMinute) % 60;
