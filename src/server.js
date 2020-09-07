@@ -131,23 +131,30 @@ app.post("/calcularHorario", (request, response) => {
       }
     }
   } /*Caso de horaSaida===horaEntrda */ else {
+    dayTimeMinutes = 00;
+    dayTimeHours = 00;
+    nightTimeHours = 00;
     if (arrivalHour >= 22) {
       nightTimeMinutes = Math.abs(arrivalMinute - departureMinute);
-      dayTimeMinutes = 0;
     } else {
       dayTimeMinutes = Math.abs(arrivalMinute - departureMinute);
       arrivalMinute = 0;
     }
   }
 
+  dayTimeHours = Math.abs(dayTimeHours);
+  dayTimeMinutes = Math.abs(dayTimeMinutes);
+  nightTimeHours = Math.abs(nightTimeHours);
+  nightTimeMinutes = Math.abs(nightTimeMinutes);
+
   return response.status(201).json({
     workHours: `${workHours}:${workMinutes}`,
-    dayTimeHours: `${dayTimeHours ? dayTimeHours : "00"}:${
-      dayTimeMinutes ? dayTimeMinutes : "00"
+    dayTimeHours: `${dayTimeHours > 10 ? dayTimeHours : `0${dayTimeHours}`}:${
+      dayTimeMinutes > 10 ? dayTimeMinutes : `0${dayTimeMinutes}`
     }`,
-    nightTimeHours: `${Math.abs(nightTimeHours ? nightTimeHours : "00")}:${
-      nightTimeMinutes ? nightTimeMinutes : "00"
-    }`,
+    nightTimeHours: `${
+      nightTimeHours > 10 ? nightTimeHours : `0${nightTimeHours}`
+    }:${dayTimeHours > 10 ? dayTimeHours : `0${dayTimeHours}`}`,
   });
 });
 
