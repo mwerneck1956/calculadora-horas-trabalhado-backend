@@ -157,6 +157,9 @@ app.post("/calcularHorario", (request, response) => {
   nightTimeMinutes =nightTimeMinutes? Math.abs(nightTimeMinutes) :00;
 
   return response.status(201).json({
+    date : date,
+    arrivalHour : arrivalTime,
+    departureHour : departureTime,
     workHours: `${workHours}:${workMinutes}`,
     dayTimeHours: `${dayTimeHours >= 10 ? dayTimeHours : `0${dayTimeHours}`}:${
       dayTimeMinutes >= 10 ? dayTimeMinutes : `0${dayTimeMinutes}`
