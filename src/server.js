@@ -6,7 +6,8 @@ const app = express();
 app.use(express.json());
 
 app.post("/calcularHorario", (request, response) => {
-  //Fazer tratamento quando horas forem iguais
+  //Fazer tratamento quando horas forem iguais ou excederem 24horas
+
   const { arrivalTime, departureTime, date } = request.body;
 
   let arrivalHour = parseInt(arrivalTime.substring(0, 2));
@@ -24,7 +25,6 @@ app.post("/calcularHorario", (request, response) => {
   if (departureHour > arrivalHour) {
     if (arrivalHour < 5 && departureHour >= 22) {
       nightTimeHours = Math.abs(5 - arrivalHour) + Math.abs(departureHour - 22);
-
       nightTimeMinutes = departureMinute;
 
       //Se a soma dos minutos de chegada com minutos de saida forem > 60 dev
@@ -39,11 +39,12 @@ app.post("/calcularHorario", (request, response) => {
       //Nesse caso hora diurno sempre vai ser o maximo trabalhado
       dayTimeHours = 18;
       dayTimeMinutes = 00;
-    }
-    else if (arrivalHour > 5) {
+
+    } else if (arrivalHour > 5 && departureHour>=22) {
       dayTimeHours = Math.abs(arrivalHour - departureHour) - Math.abs(departureHour - 22);
       //Se minuto for maior que 0 a hora ira diminuir um
       if (arrivalMinute > 0) {
+        console.log('me chegou aqui')
         dayTimeHours--;
         dayTimeMinutes = Math.abs(arrivalMinute - 60);
       }
@@ -57,13 +58,11 @@ app.post("/calcularHorario", (request, response) => {
       if (arrivalHour > 5) {
         nightTimeHours = 00;
         nightTimeMinutes = 00;
-        dayTimeHours =
-          Math.abs(departureHour - arrivalHour) - Math.abs(departureHour - 22);
+        dayTimeHours = Math.abs(departureHour - arrivalHour);
         //Minutos de dia de trabalho vão sempre ser a diferença dos minutos de
         //saida ate os minutos de chegada
         dayTimeMinutes = Math.abs(arrivalMinute - departureMinute);
       } else {
-        console.log("entra aqui");
         nightTimeHours = Math.abs(arrivalHour - 5);
         /*Já se os minutos de trabalho noturno forem maior que 0 tenho que tirar
         1 das horas noturnos e para achar os minutos tenho que fazer 60 - hora
