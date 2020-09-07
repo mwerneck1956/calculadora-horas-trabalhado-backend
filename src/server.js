@@ -22,7 +22,7 @@ app.post("/calcularHorario", (request, response) => {
     nightTimeMinutes;
 
   if (departureHour > arrivalHour) {
-    if (arrivalHour < 5 && departureHour > 22) {
+    if (arrivalHour < 5 && departureHour >= 22) {
       nightTimeHours = Math.abs(5 - arrivalHour) + Math.abs(departureHour - 22);
 
       nightTimeMinutes = departureMinute;
@@ -39,11 +39,11 @@ app.post("/calcularHorario", (request, response) => {
       //Nesse caso hora diurno sempre vai ser o maximo trabalhado
       dayTimeHours = 18;
       dayTimeMinutes = 00;
-    }if (arrivalHour > 5) {
-      console.log("entrou heheh ");
-      dayTimeHours =Math.abs(arrivalHour - departureHour) - Math.abs(departureHour - 22);
+    }
+    else if (arrivalHour > 5) {
+      dayTimeHours = Math.abs(arrivalHour - departureHour) - Math.abs(departureHour - 22);
       //Se minuto for maior que 0 a hora ira diminuir um
-      if (arrivalMinute > 0 ){
+      if (arrivalMinute > 0) {
         dayTimeHours--;
         dayTimeMinutes = Math.abs(arrivalMinute - 60);
       }
@@ -84,7 +84,9 @@ app.post("/calcularHorario", (request, response) => {
 
   return response.status(201).json({
     workHours: `${workHours}:${workMinutes}`,
-    dayTimeHours: `${dayTimeHours}:${Math.abs(dayTimeMinutes ? dayTimeMinutes : "00")}`,
+    dayTimeHours: `${dayTimeHours}:${Math.abs(
+      dayTimeMinutes ? dayTimeMinutes : "00"
+    )}`,
     nightTimeHours: `${nightTimeHours}:${
       nightTimeMinutes ? nightTimeMinutes : "00"
     }`,
