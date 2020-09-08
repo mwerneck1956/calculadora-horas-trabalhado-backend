@@ -1,6 +1,5 @@
 const express = require("express");
 
-
 let porta = process.env.PORT || 3333;
 const app = express();
 const cors = require("cors");
@@ -27,8 +26,10 @@ app.post("/calcularHorario", (request, response) => {
     nightTimeMinutes;
   //caso horario de saida === horario entrada mando uma mensagem de erro pois o
   //tempo de trabalho não pode ultrapassar 24 horas
-  if(arrivalHour == departureHour) {
-      return response.status(400).json({"message" : "Horas de trabalho excederam 24 horas!"})
+  if (arrivalHour == departureHour) {
+    return response
+      .status(400)
+      .json({ message: "Horas de trabalho excederam 24 horas!" });
   }
   if (departureHour > arrivalHour) {
     if (arrivalHour < 5 && departureHour >= 22) {
@@ -68,27 +69,37 @@ app.post("/calcularHorario", (request, response) => {
         dayTimeHours = Math.abs(departureHour - arrivalHour);
         //Minutos de dia de trabalho vão sempre ser a diferença dos minutos de
         //saida ate os minutos de chegada
-        dayTimeMinutes = Math.abs(arrivalMinute - departureMinute);
+        if (arrivalMinute + departureMinute >= 60) {
+          dayTimeHours--;
+          dayTimeMinutes = Math.abs(arrivalMinute - departureMinute);
+        } else if (arrivalMinute > 0) {
+          dayTimeHours--;
+          dayTimeMinutes = Math.abs(arrivalMinute - 60);
+        }
       } else {
-        nightTimeHours = Math.abs(arrivalHour - 5);
+        console.log("to aqui");
+        nightTimeHours = Math.abs(arrivalHour - departureHour);
         /*Já se os minutos de trabalho noturno forem maior que 0 tenho que tirar
         1 das horas noturnos e para achar os minutos tenho que fazer 60 - hora
         chegada
         */
+        if(arrivalMinute === departureMinute){
+          
+        }
         if (arrivalMinute > 0) {
           nightTimeHours--;
           nightTimeMinutes = Math.abs(arrivalMinute - 60);
         }
         //Os minutos diurno sempre serão igual ao minuto de saida
         dayTimeMinutes = departureMinute;
-        //
-        dayTimeHours =
-          Math.abs(departureHour - arrivalHour) - Math.abs(5 - arrivalHour);
+       
+        dayTimeHours = departureHour >= 5 ? Math.abs(departureHour - arrivalHour) - Math.abs(5 - arrivalHour) : 00;
       }
     }
   } else if (arrivalHour > departureHour) {
     if (arrivalHour < 22) {
       if (departureHour >= 5) {
+        console.log("entrou aqui");
         //Se ele saiu depois da 5 e entrou antes das 22 logo ele trabalhou todo
         // o turno da noite
         nightTimeHours = 07;
@@ -123,7 +134,6 @@ app.post("/calcularHorario", (request, response) => {
             : Math.abs(arrivalHour - 22) + departureHour;
         nightTimeMinutes = departureMinute + arrivalMinute;
 
-
         if (arrivalMinute + departureMinute >= 60) {
           nightTimeHours++;
           //nightTimeMinutes = departureMinute - arrivalMinute
@@ -133,29 +143,29 @@ app.post("/calcularHorario", (request, response) => {
         /*Se o funcionario chegou apos as 22 e saiu depois d
         as 5 da manhã ela tr
         alhou uma parte no perido da noite e outra no diurno , logo*/
-        
+
         nightTimeHours = Math.abs(arrivalHour - 24) + 5;
         nightTimeMinutes = arrivalMinute;
-        if(arrivalMinute > 0){
-            nightTimeHours--
-            nightTimeMinutes-=60  
+        if (arrivalMinute > 0) {
+          nightTimeHours--;
+          nightTimeMinutes -= 60;
         }
         dayTimeHours = Math.abs(5 - departureHour);
         dayTimeMinutes = departureMinute;
       }
     }
-  } 
+  }
 
   //Para ajudar na formatação da respota
   dayTimeHours = dayTimeHours ? Math.abs(dayTimeHours) : 00;
   dayTimeMinutes = dayTimeMinutes ? Math.abs(dayTimeMinutes) : 00;
   nightTimeHours = nightTimeHours ? Math.abs(nightTimeHours) : 00;
-  nightTimeMinutes =nightTimeMinutes? Math.abs(nightTimeMinutes) :00;
+  nightTimeMinutes = nightTimeMinutes ? Math.abs(nightTimeMinutes) : 00;
 
   return response.status(201).json({
-    date : date,
-    arrivalHour : arrivalTime,
-    departureHour : departureTime,
+    date: date,
+    arrivalHour: arrivalTime,
+    departureHour: departureTime,
     //workHours: `${workHours}:${workMinutes}`,
     dayTimeHours: `${dayTimeHours >= 10 ? dayTimeHours : `0${dayTimeHours}`}:${
       dayTimeMinutes >= 10 ? dayTimeMinutes : `0${dayTimeMinutes}`
@@ -167,4 +177,3 @@ app.post("/calcularHorario", (request, response) => {
 });
 
 app.listen(porta, () => console.log("server started on port 3033!"));
-
