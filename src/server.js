@@ -35,7 +35,6 @@ app.post("/calcularHorario", (request, response) => {
     if (arrivalHour < 5 && departureHour >= 22) {
       nightTimeHours = Math.abs(5 - arrivalHour) + Math.abs(departureHour - 22);
       nightTimeMinutes = departureMinute;
-
       //Se a soma dos minutos de chegada com minutos de saida forem > 60 dev
       //e acrescentar um as horas noturnas e o resto da divisão dessa somo p
       //or 60 serão os minutos noturno
@@ -63,6 +62,7 @@ app.post("/calcularHorario", (request, response) => {
     } else {
       //Como a hora é < 22 so vai ter horario noturno se a hora de chegada for
       //inferior a 5
+      
       if (arrivalHour > 5) {
         nightTimeHours = 00;
         nightTimeMinutes = 00;
@@ -70,7 +70,6 @@ app.post("/calcularHorario", (request, response) => {
         //Minutos de dia de trabalho vão sempre ser a diferença dos minutos de
         //saida ate os minutos de chegada
         if (arrivalMinute + departureMinute >= 60) {
-          dayTimeHours--;
           dayTimeMinutes = Math.abs(arrivalMinute - departureMinute);
         } else if (arrivalMinute > 0) {
           dayTimeHours--;
@@ -99,7 +98,6 @@ app.post("/calcularHorario", (request, response) => {
   } else if (arrivalHour > departureHour) {
     if (arrivalHour < 22) {
       if (departureHour >= 5) {
-        console.log("entrou aqui");
         //Se ele saiu depois da 5 e entrou antes das 22 logo ele trabalhou todo
         // o turno da noite
         nightTimeHours = 07;
