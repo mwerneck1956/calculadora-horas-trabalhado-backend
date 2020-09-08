@@ -89,7 +89,7 @@ app.get("/calcularHorario", (request, response) => {
         dayTime = Math.abs(arrivalTimeMinutes - 22*60) + (300 - departureMinute);
         nightTime = 7*60;
       }else{
-        nightTime =Math.abs(300 - departureTimeMinutes);
+        nightTime =Math.abs(120)  +Math.abs((300 - departureTimeMinutes));
         dayTime = Math.abs(arrivalTimeMinutes - 22*60);
 
       }
