@@ -31,7 +31,6 @@ app.get("/calcularHorario", (request, response) => {
   departureTimeMinutes = departureHour * 60 + departureMinute;
 
   if (arrivalHour >= 22 && departureHour <= 5) {
-    console.log("fala ai ");
     dayTime = 00;
     nightTime =
       Math.abs(arrivalTimeMinutes - 24 * 60) + Math.abs(departureTimeMinutes);
@@ -39,15 +38,22 @@ app.get("/calcularHorario", (request, response) => {
     (arrivalHour >= 22 && departureHour >= 22  ) ||
     (arrivalHour <= 5 && departureHour <= 5)
   ) {
-    console.log("entrei");
     dayTime = 00;
     nightTime = Math.abs(arrivalTimeMinutes - departureTimeMinutes);
   } else if (
-    (arrivalHour >= 5 && arrivalHour < 22) && (departureHour >= 5 && departureHour < 22)
+    ( departureHour > arrivalHour && arrivalHour >= 5 && arrivalHour <= 21 && departureHour <=  22)
   ) {
     console.log("entrei aqui");
     nightTime = 00;
     dayTime = Math.abs(arrivalTimeMinutes - departureTimeMinutes);
+  }else if(arrivalHour >= 22 && departureHour > 5){
+    console.log('to nesse')
+    nightTime = Math.abs(arrivalTimeMinutes - (24*60)) + 300;
+    dayTime = Math.abs((departureTimeMinutes) - (5*60));
+  }else if(arrivalHour < 22 && departureHour > 5){
+    console.log('to aqui xx')
+    nightTime = 420;
+    dayTime = Math.abs(arrivalTimeMinutes - (1320)) + Math.abs(departureTimeMinutes - 300 )
   }
   //caso horario de saida === horario entrada mando uma mensagem de erro pois o
   //tempo de trabalho não pode ultrapassar 24 horas
