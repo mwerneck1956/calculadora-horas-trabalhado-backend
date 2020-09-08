@@ -72,6 +72,21 @@ app.get("/calcularHorario", (request, response) => {
   }else if(arrivalHour < 5 && departureHour < 5 && arrivalHour > departureHour){
     nightTime = Math.abs(300 - arrivalTimeMinutes) + Math.abs(120 + departureTimeMinutes)
     dayTime = 1020; 
+  }else if(departureHour > 22 && arrivalHour < 22){
+
+      if(arrivalHour < 5){
+  
+        nightTime = departureHour <= 22? Math.abs(300 - arrivalTimeMinutes) +  Math.abs(1440 - departureTimeMinutes)
+        : Math.abs(300 - arrivalTimeMinutes) +  Math.abs(1320 - departureTimeMinutes)
+        
+
+        console.log(nightTime)
+        dayTime = 1020;
+      }if(arrivalHour >= 5 ){
+          dayTime = Math.abs(arrivalTimeMinutes - (22*60));
+          nightTime =Math.abs(departureTimeMinutes - (22*60))
+          
+      }
   }
   //caso horario de saida === horario entrada mando uma mensagem de erro pois o
   //tempo de trabalho não pode ultrapassar 24 horas
@@ -86,8 +101,8 @@ app.get("/calcularHorario", (request, response) => {
     date: date,
     arrivalHour: arrivalTime,
     departureHour: departureTime,
-    dayTimeHours: `${Math.floor(dayTime / 60)} : ${dayTime % 60}`,
-    nightTimeHours: `${Math.floor(nightTime / 60)} : ${nightTime % 60}`,
+    dayTimeHours: `${Math.floor(dayTime / 60) >= 10 ? Math.floor(dayTime / 60) : `0${Math.floor(dayTime / 60)}` } : ${(dayTime % 60) >= 10 ? dayTime%60 : `0${dayTime%60}` }`,
+    nightTimeHours: `${Math.floor(nightTime / 60) >= 10 ? Math.floor(nightTime / 60) : `0${Math.floor(nightTime / 60)}` } : ${(nightTime % 60) >= 10 ? nightTime%60 : `0${nightTime%60}` }`,
 
     //workHours: `${workHours}:${workMinutes}`,
   });
