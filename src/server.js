@@ -28,10 +28,12 @@ app.post("/calcularHorario", (request, response) => {
     dayTime = 00;
     nightTime =
       Math.abs(arrivalTimeMinutes - 24 * 60) + Math.abs(departureTimeMinutes);
+
   } else if (
     (arrivalHour >= 22 && departureHour >= 22) ||
-    (departureHour > arrivalHour && arrivalHour <= 5 && departureHour <= 5)
+    (departureHour > arrivalHour && arrivalHour <= 5 && departureTimeMinutes <= 301 )
   ) {
+    
     dayTime = 00;
     nightTime = Math.abs(arrivalTimeMinutes - departureTimeMinutes);
   } else if (
@@ -66,11 +68,13 @@ app.post("/calcularHorario", (request, response) => {
     departureHour < 5 &&
     arrivalHour > departureHour
   ) {
+
     nightTime =
       Math.abs(300 - arrivalTimeMinutes) + Math.abs(120 + departureTimeMinutes);
     dayTime = 1020;
   } else if (departureHour > 22 && arrivalHour < 22) {
     if (arrivalHour < 5) {
+
       nightTime =
         departureHour <= 22
           ? Math.abs(300 - arrivalTimeMinutes) +
@@ -86,18 +90,17 @@ app.post("/calcularHorario", (request, response) => {
     }
   }else if(arrivalHour >= 5 && arrivalHour < 22 && departureHour <= 5  ){
       if(departureHour === 5){
-        console.log('to aqui ne')
         dayTime = Math.abs(arrivalTimeMinutes - 1320) + Math.abs((300 - departureTimeMinutes));
         nightTime = 7*60;
       }else{
-        console.log('to here')
-        nightTime =Math.abs(120)  + Math.abs((300 - departureTimeMinutes));
+
+        nightTime =Math.abs(120)  +  departureTimeMinutes;
         dayTime = Math.abs(arrivalTimeMinutes) - 22*60;
 
       }
 
-  }else if(departureHour> 5 && departureHour <= 22 ){
- 
+  }else if(departureHour>= 5 && departureHour <= 22 ){
+    
     if(arrivalHour < 5){
       nightTime = Math.abs(300 - arrivalTimeMinutes);
       dayTime =  Math.abs(300 - departureTimeMinutes);
@@ -117,6 +120,9 @@ app.post("/calcularHorario", (request, response) => {
       .status(400)
       .json({ message: "Horas de trabalho excederam 24 horas!" });
   }
+
+  dayTime = Math.abs(dayTime)
+  nightTime = Math.abs(nightTime)
 
   return response.status(201).json({
     date: date,
