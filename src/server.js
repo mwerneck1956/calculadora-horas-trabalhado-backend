@@ -27,22 +27,25 @@ app.get("/calcularHorario", (request, response) => {
     dayTime,
     nightTime,
     //Vou transformar os dados em minutos para facilitar os calculos
-    arrivalTimeMinutes = arrivalHour * 60 + arrivalMinute;
+  arrivalTimeMinutes = arrivalHour * 60 + arrivalMinute;
   departureTimeMinutes = departureHour * 60 + departureMinute;
 
   if (arrivalHour >= 22 && departureHour <= 5) {
-    console.log('fala ai ')
+    console.log("fala ai ");
     dayTime = 00;
     nightTime =
-    Math.abs(arrivalTimeMinutes - (24 * 60)) + Math.abs(departureTimeMinutes);
+      Math.abs(arrivalTimeMinutes - 24 * 60) + Math.abs(departureTimeMinutes);
   } else if (
-    (arrivalHour >= 22 && departureHour <= 24) ||
+    (arrivalHour >= 22 && departureHour >= 22  ) ||
     (arrivalHour <= 5 && departureHour <= 5)
   ) {
     console.log("entrei");
     dayTime = 00;
     nightTime = Math.abs(arrivalTimeMinutes - departureTimeMinutes);
-  }else if(arrivalHour >= 5 && arrivalHour <= 22 && departureHour >= 5 && departureHour <= 22){
+  } else if (
+    (arrivalHour >= 5 && arrivalHour < 22) && (departureHour >= 5 && departureHour < 22)
+  ) {
+    console.log("entrei aqui");
     nightTime = 00;
     dayTime = Math.abs(arrivalTimeMinutes - departureTimeMinutes);
   }
