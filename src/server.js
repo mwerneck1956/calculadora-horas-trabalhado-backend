@@ -77,7 +77,6 @@ app.post("/calcularHorario", (request, response) => {
         }
         
       } else {
-        console.log("to aqui");
         nightTimeHours = Math.abs(arrivalHour - 5);
         /*Já se os minutos de trabalho noturno forem maior que 0 tenho que tirar
         1 das horas noturnos e para achar os minutos tenho que fazer 60 - hora
