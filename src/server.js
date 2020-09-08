@@ -8,7 +8,7 @@ const cors = require("cors");
 app.use(express.json());
 app.use(cors({ origin: true, credentials: false }));
 
-app.get("/calcularHorario", (request, response) => {
+app.post("/calcularHorario", (request, response) => {
   //Fazer tratamento quando horas forem iguais ou excederem 24horas
   const { arrivalTime, departureTime, date } = request.body;
 
@@ -86,13 +86,27 @@ app.get("/calcularHorario", (request, response) => {
     }
   }else if(arrivalHour >= 5 && arrivalHour < 22 && departureHour <= 5  ){
       if(departureHour === 5){
-        dayTime = Math.abs(arrivalTimeMinutes - 22*60) + (300 - departureMinute);
+        console.log('to aqui ne')
+        dayTime = Math.abs(arrivalTimeMinutes - 1320) + Math.abs((300 - departureTimeMinutes));
         nightTime = 7*60;
       }else{
-        nightTime =Math.abs(120)  +Math.abs((300 - departureTimeMinutes));
-        dayTime = Math.abs(arrivalTimeMinutes - 22*60);
+        console.log('to here')
+        nightTime =Math.abs(120)  + Math.abs((300 - departureTimeMinutes));
+        dayTime = Math.abs(arrivalTimeMinutes) - 22*60;
 
       }
+
+  }else if(departureHour> 5 && departureHour <= 22 ){
+ 
+    if(arrivalHour < 5){
+      nightTime = Math.abs(300 - arrivalTimeMinutes);
+      dayTime =  Math.abs(300 - departureTimeMinutes);
+      /*nightTime =  120 + Math.abs(300 - arrivalTimeMinutes)*/
+    }else{
+        nightTime = departureHour === 22 ? Math.abs(22*60 - departureTimeMinutes) : 00;
+        dayTime = departureHour === 22 ?  Math.abs(22*60 - arrivalTimeMinutes)  : departureTimeMinutes - arrivalTimeMinutes;
+
+    }
 
   }
   //caso horario de saida === horario entrada mando uma mensagem de erro pois o
