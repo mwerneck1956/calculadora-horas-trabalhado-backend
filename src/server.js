@@ -17,43 +17,61 @@ app.get("/calcularHorario", (request, response) => {
 
   let departureHour = parseInt(departureTime.substring(0, 2));
   let departureMinute = parseInt(departureTime.substring(3, 5));
-  let workHours,
-    workMinutes,
-    dayTimeHours,
-    nightTimeHours,
-    dayTimeMinutes,
-    nightTimeMinutes,
-    DepartureTime,
+  let 
     dayTime,
     nightTime,
     //Vou transformar os dados em minutos para facilitar os calculos
-  arrivalTimeMinutes = arrivalHour * 60 + arrivalMinute;
-  departureTimeMinutes = departureHour * 60 + departureMinute;
+    arrivalTimeMinutes = arrivalHour * 60 + arrivalMinute;
+    departureTimeMinutes = departureHour * 60 + departureMinute;
 
+  //Calculo quando a pessoa so trabalhou horas noturnas
   if (arrivalHour >= 22 && departureHour <= 5) {
+    console.log('primeiro')
     dayTime = 00;
     nightTime =
       Math.abs(arrivalTimeMinutes - 24 * 60) + Math.abs(departureTimeMinutes);
-  } else if (
-    (arrivalHour >= 22 && departureHour >= 22  ) ||
-    (arrivalHour <= 5 && departureHour <= 5)
+  } 
+  else if (
+    (arrivalHour >= 22 && departureHour >= 22) ||
+    (departureHour > arrivalHour && arrivalHour <= 5 && departureHour <= 5)
   ) {
+    console.log('segundo')
     dayTime = 00;
     nightTime = Math.abs(arrivalTimeMinutes - departureTimeMinutes);
-  } else if (
-    ( departureHour > arrivalHour && arrivalHour >= 5 && arrivalHour <= 21 && departureHour <=  22)
+  }
+  /*--------------------------------------------------------------------------------------------*/ 
+  
+  /* Calculo quando funcionario trabalhou somente horas diurnas*/
+
+  else if (
+    departureHour > arrivalHour &&
+    arrivalHour >= 5 &&
+    arrivalHour <= 21 &&
+    departureTimeMinutes <= 1320
   ) {
     console.log("entrei aqui");
     nightTime = 00;
     dayTime = Math.abs(arrivalTimeMinutes - departureTimeMinutes);
-  }else if(arrivalHour >= 22 && departureHour > 5){
-    console.log('to nesse')
-    nightTime = Math.abs(arrivalTimeMinutes - (24*60)) + 300;
-    dayTime = Math.abs((departureTimeMinutes) - (5*60));
-  }else if(arrivalHour < 22 && departureHour > 5){
-    console.log('to aqui xx')
+  } 
+  /* -------------------------------------------------------------------------------------------*/
+
+  else if (arrivalHour >= 22 && departureHour > 5) {
+    console.log("to nesse");
+    nightTime = Math.abs(arrivalTimeMinutes - 24 * 60) + 300;
+    dayTime = Math.abs(departureTimeMinutes - 5 * 60);
+  } else if (
+    arrivalHour > departureHour &&
+    arrivalHour < 22 && 
+    departureHour > 5
+  ) {
+    console.log("to aqui xx");
     nightTime = 420;
-    dayTime = Math.abs(arrivalTimeMinutes - (1320)) + Math.abs(departureTimeMinutes - 300 )
+    dayTime =
+      Math.abs(arrivalTimeMinutes - 1320) +
+      Math.abs(departureTimeMinutes - 300);
+  }else if(arrivalHour < 5 && departureHour < 5 && arrivalHour > departureHour){
+    nightTime = Math.abs(300 - arrivalTimeMinutes) + Math.abs(120 + departureTimeMinutes)
+    dayTime = 1020; 
   }
   //caso horario de saida === horario entrada mando uma mensagem de erro pois o
   //tempo de trabalho não pode ultrapassar 24 horas
