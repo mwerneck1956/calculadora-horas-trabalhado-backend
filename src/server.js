@@ -21,7 +21,7 @@ app.post("/calcularHorario", (request, response) => {
   let workHours,
     workMinutes,
     dayTimeHours,
-    nightTimeHours,
+    nightTimeHours, 
     dayTimeMinutes,
     nightTimeMinutes;
   //caso horario de saida === horario entrada mando uma mensagem de erro pois o
@@ -62,7 +62,7 @@ app.post("/calcularHorario", (request, response) => {
     } else {
       //Como a hora é < 22 so vai ter horario noturno se a hora de chegada for
       //inferior a 5
-      
+
       if (arrivalHour > 5) {
         nightTimeHours = 00;
         nightTimeMinutes = 00;
@@ -75,24 +75,25 @@ app.post("/calcularHorario", (request, response) => {
           dayTimeHours--;
           dayTimeMinutes = Math.abs(arrivalMinute - 60);
         }
+        
       } else {
         console.log("to aqui");
-        nightTimeHours = Math.abs(arrivalHour - departureHour);
+        nightTimeHours = Math.abs(arrivalHour - 5);
         /*Já se os minutos de trabalho noturno forem maior que 0 tenho que tirar
         1 das horas noturnos e para achar os minutos tenho que fazer 60 - hora
         chegada
         */
-        if(arrivalMinute === departureMinute){
-          
-        }
         if (arrivalMinute > 0) {
           nightTimeHours--;
-          nightTimeMinutes = Math.abs(arrivalMinute - 60);
+          nightTimeMinutes = Math.abs(arrivalMinute - departureMinute);
         }
-        //Os minutos diurno sempre serão igual ao minuto de saida
-        dayTimeMinutes = departureMinute;
-       
-        dayTimeHours = departureHour >= 5 ? Math.abs(departureHour - arrivalHour) - Math.abs(5 - arrivalHour) : 00;
+        //Os minutos diurno sempre serão igual ao minuto de saida se o funcion
+        //ario sair apos as 5 da manha
+        dayTimeMinutes = departureHour>= 5 ? departureMinute : 00;
+        dayTimeHours =
+          departureHour >= 5
+            ? Math.abs(departureHour - arrivalHour) - Math.abs(5 - arrivalHour)
+            : 00;
       }
     }
   } else if (arrivalHour > departureHour) {
@@ -139,8 +140,8 @@ app.post("/calcularHorario", (request, response) => {
         }
       } else {
         /*Se o funcionario chegou apos as 22 e saiu depois d
-        as 5 da manhã ela tr
-        alhou uma parte no perido da noite e outra no diurno , logo*/
+        as 5 da manhã ela tralhou uma parte no perido da noite e outra no diurno
+        , logo*/
 
         nightTimeHours = Math.abs(arrivalHour - 24) + 5;
         nightTimeMinutes = arrivalMinute;
@@ -174,4 +175,4 @@ app.post("/calcularHorario", (request, response) => {
   });
 });
 
-app.listen(porta, () => console.log("server started on port 3033!"));
+app.listen(porta, () => console.log("server started on port 3333!"));
