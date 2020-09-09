@@ -9,6 +9,14 @@
 
 > Backend para a aplicação [calculadora-horas-trabalhadas](https://github.com/mwerneck1956/calculadora-horas-trabalho-frontend) , tem um metodo que recebe como parametro hora de chegada e de saída de um funcionário e retorna horas diurnas e noturnas trabalhadas
 
+## Prerequisites
+
+```sh
+Node
+yarn || npm
+```
+
+
 ## Install
 
 ```sh
