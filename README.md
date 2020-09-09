@@ -11,10 +11,8 @@
 
 ## Prerequisites
 
-```sh
- [Node](https://nodejs.org/en/download/)
- [Yarn](https://classic.yarnpkg.com/pt-BR/docs/install/#debian-stable)
-```
+[Node](https://nodejs.org/en/download/)
+[Yarn](https://classic.yarnpkg.com/pt-BR/docs/install/#debian-stable)
 
 
 ## Install
